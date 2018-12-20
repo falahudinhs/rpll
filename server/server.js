@@ -14,12 +14,10 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use(cors());
 
 var userRoutes = require('./api/routes/userRoutes');
-// var vulnRoutes = require('./api/routes/vulnerabilitiesRoutes');
-// var compRoutes = require('./api/routes/complianceRoutes');
+var suratRoutes = require('./api/routes/suratRoute')
 
 userRoutes(app); 
-// vulnRoutes(app);
-// compRoutes(app);
+suratRoutes(app);
 
 app.listen(port);
 

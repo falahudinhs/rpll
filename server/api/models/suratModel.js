@@ -7,7 +7,7 @@ var userOptions = {
 
 // Define our user schema
 var SuratSchema= new mongoose.Schema({
-  no: {
+  nomor: {
     type: String,
     unique: true,
     required: true,
@@ -17,12 +17,12 @@ var SuratSchema= new mongoose.Schema({
     type: String
   },
   idMahasiswa: {
-    type: mongoose.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'User'
   },
   status: {
-    type: string,
+    type: String,
     default: 'pending'
   },
   tanggalDiajukan:{

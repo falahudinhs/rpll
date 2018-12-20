@@ -1,0 +1,168 @@
+// Load required packages
+var User = require('../models/userModels');
+var Surat = require('../models/suratModel');
+var Aktif = require('../models/keteranganAktifModels');
+var DataKuliah = require('../models/permintaanDataKuliahModels')
+var DataAkhir = require('../models/permintaanDataAkhirModels');
+
+
+// Create endpoint /api/users for POST
+exports.createAktif = function(req, res) {
+  var aktif = new Aktif({
+    nomor: req.body.nomor,
+    nama: 'Surat Keterangan Aktif',
+    idMahasiswa: req.body.idMahasiswa,
+    tanggalDiajukan: new Date(req.body.tanggalDiajukan),
+    tanggalSelesai: new Date(req.body.tanggalSelesai),
+    tujuanPembuatan: req.body.tujuanPembuatan
+  });
+
+  aktif.save(function(err) {
+    if (err){
+      return res.status(409).json(err);
+    };
+    return res.json('Keterangan aktif created');
+  });
+};
+
+exports.createDataKuliah = function(req, res) {
+  var data = new DataKuliah({
+    nomor: req.body.nomor,
+    nama: 'Surat Permintaan Data untuk Tugas Kuliah',
+    idMahasiswa: req.body.idMahasiswa,
+    tanggalDiajukan: req.body.tanggalDiajukan,
+    tanggalSelesai: req.body.tanggalSelesai,
+    instansiTujuan: req.body.instansiTujuan,
+    alamatInstansi: req.body.alamatInstansi,
+    mataKuliah: req.body.mataKuliah,
+    tujuanPermintaan: req.body.tujuanPermintaan,
+    dosenPengajar: req.body.dosenPengajar
+  });
+
+  data.save(function(err) {
+    if (err){
+      return res.status(409).json(err);
+    };
+    return res.json('Data kuliah created');
+  });
+};
+
+exports.createDataAkhir = function(req, res) {
+  var data = new DataAkhir({
+    nomor: req.body.nomor,
+    nama: 'Surat Permintaan Data untuk Tugas Akhir',
+    idMahasiswa: req.body.idMahasiswa,
+    tanggalDiajukan: req.body.tanggalDiajukan,
+    tanggalSelesai: req.body.tanggalSelesai,
+    instansiTujuan: req.body.instansiTujuan,
+    alamatInstansi: req.body.alamatInstansi,
+    topikSkripsi: req.body.topikSkripsi,
+    tujuanPermintaan: req.body.tujuanPermintaan,
+    pembimbing: req.body.pembimbing
+  });
+
+  data.save(function(err) {
+    if (err){
+      return res.status(409).json(err);
+    };
+    return res.json('Data akhir created');
+  });
+};
+
+exports.edit_user_status = function(req, res){
+  User.findOneAndUpdate(
+    { _id: req.body.idUser }, { $set: { 
+      status: 'approved', 
+      privilege: req.body.privilege
+    }}
+  )
+  .exec()
+    .then(result => {
+        res.status(200).json({
+            result,
+            message: "User updated",
+            request: {
+                type: "PATCH"
+            }
+        });
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
+        });
+    })
+}
+
+exports.deleteSurat = function(req, res){
+  User.findOneAndRemove(
+    {_id: req.params.idSurat}
+  )
+  .exec()
+  .then(result => {
+    if (result) res.status(200).json({result, message: 'Surat deleted'});
+    else res.status(401).json('Surat not found')
+  })
+}
+
+exports.get_user_waiting = function(req, res){
+  User.find({status: 'waiting'})
+  .exec()
+  .then(result => {
+    res.status(200).json(result);
+  })
+}
+
+// Create endpoint /api/users for GET
+exports.getSuratMahasiswa = function(req, res) {
+    Surat.findById(req.userData.userId)
+    .exec()
+    .then(result => {
+      res.status(200).json(result);
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: err
+      });
+    })
+}; 
+
+exports.getSuratAktif = function(req, res) {
+  var populateQuery = [{path:'idMahasiswa', select:'nama nim angkatan'}];
+  Surat.find({jenis: 'keterangan aktif'})
+  .populate(populateQuery)
+  .exec()
+  .then(result => {
+    res.status(200).json(result);
+  })
+  .catch(err => {
+    res.status(500).json({
+      error: err
+    });
+  })
+}; 
+
+exports.getSuratDataKuliah = function(req, res) {
+  Surat.find({jenis: 'data tugas kuliah'})
+  .exec()
+  .then(result => {
+    res.status(200).json(result);
+  })
+  .catch(err => {
+    res.status(500).json({
+      error: err
+    });
+  })
+}; 
+
+exports.getSuratDataAkhir = function(req, res) {
+  Surat.find({jenis: 'data tugas akhir'})
+  .exec()
+  .then(result => {
+    res.status(200).json(result);
+  })
+  .catch(err => {
+    res.status(500).json({
+      error: err
+    });
+  })
+}; 
