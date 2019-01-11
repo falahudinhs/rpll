@@ -9,9 +9,9 @@ var userOptions = {
 var SuratSchema= new mongoose.Schema({
   nomor: {
     type: String,
-    unique: true,
+    // unique: true,
     required: true,
-    sparse: true
+    // sparse: true
   },
   nama: {
     type: String
@@ -26,10 +26,12 @@ var SuratSchema= new mongoose.Schema({
     default: 'pending'
   },
   tanggalDiajukan:{
-    type: Date
+    type: Date,
+    default: new Date()
   },
   tanggalSelesai:{
-    type: Date
+    type: Date,
+    default: +new Date() + 7*24*60*60*1000
   }
 }, userOptions,
 );

@@ -4,24 +4,96 @@ var Surat = require('../models/suratModel');
 var Aktif = require('../models/keteranganAktifModels');
 var DataKuliah = require('../models/permintaanDataKuliahModels')
 var DataAkhir = require('../models/permintaanDataAkhirModels');
-
+var pdfMake = require('pdfmake');
 
 // Create endpoint /api/users for POST
+exports.aktif = function(req, res) {
+  var populateQuery = [{path:'idMahasiswa', select:'nama nim semester'}];
+  if (req.userData.role=='mahasiswa'){
+    Surat.find({jenis: 'keterangan aktif', idMahasiswa: req.userData.userId})
+    .populate(populateQuery)
+    .sort({tanggalDiajukan: -1})
+    .exec()
+    .then(result => {
+      return res.render('aktif-user', {data: result});
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: err
+      });
+    })
+  }
+  else if (req.userData.role=='petugas'){
+    Surat.find({jenis: 'keterangan aktif'})
+    .populate(populateQuery)
+    .sort({tanggalDiajukan: 1})
+    .exec()
+    .then(result => {
+      return res.render('aktif', {data: result});
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: err
+      });
+    })
+  } 
+};
+
+exports.suratDetail = function(req, res) {
+  var populateQuery = [{path:'idMahasiswa', select:'nama nim semester'}];
+  console.log('id surat', req.body.suratId)
+  Surat.findOne({_id: req.body.suratId})
+  .populate(populateQuery)
+  .exec()
+  .then(result => {
+    console.log(result)
+    if (result.jenis=='keterangan aktif') return res.render('detail-aktif', {data: result});
+    else if (result.jenis=='data kuliah') return res.render('detail-matkul', {data: result});
+    else if (result.jenis=='data akhir') return res.render('detail-akhir', {data: result});
+  })
+  .catch(err => {
+    res.status(500).json({
+      error: err
+    });
+  })
+};
+
+exports.printPdf = function(req, res) {
+  var content = req.body;
+  console.log('ini konten',content)
+  pdfMake.createPdf(content).download('pdf aktif', function(err, res){
+    if (err) return err;
+    return res;
+  });
+  
+};
+
+exports.aktifForm = function(req, res) {
+  User.findById(req.userData.userId, '_id username nama email telepon nim semester')
+    .exec()
+    .then(result => {
+      return res.render('form-aktif-user', {data: result});
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: err
+      });
+    })
+};
+
 exports.createAktif = function(req, res) {
   var aktif = new Aktif({
-    nomor: req.body.nomor,
+    nomor: 'ILKOM/3142',
     nama: 'Surat Keterangan Aktif',
-    idMahasiswa: req.body.idMahasiswa,
-    tanggalDiajukan: new Date(req.body.tanggalDiajukan),
-    tanggalSelesai: new Date(req.body.tanggalSelesai),
-    tujuanPembuatan: req.body.tujuanPembuatan
+    idMahasiswa: req.userData.userId,
+    tujuanPembuatan: req.body.alasan
   });
 
   aktif.save(function(err) {
     if (err){
       return res.status(409).json(err);
     };
-    return res.json('Keterangan aktif created');
+    return res.redirect('/surat/aktif');
   });
 };
 

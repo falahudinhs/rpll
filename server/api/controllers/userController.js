@@ -1,39 +1,47 @@
 // Load required packages
+var express = require('express');
+var app = express();
 var User = require('../models/userModels');
 var Mahasiswa = require('../models/mahasiswaModels');
 var Petugas = require('../models/petugasModels');
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcrypt-nodejs');
 
-
 // Create endpoint /api/users for POST
+//Show signup form
+exports.createForm = function(req, res) {
+  res.render('index');
+};
+
+exports.loginForm = function(req, res) {
+  var token = req.cookies.auth;
+  if(token){
+    jwt.verify(token, 'secretkey', function(err, decoded) {
+      if(err) return res.render('login-user');
+      return res.redirect('/home')
+    });
+  }
+  else return res.render('login-user');
+};
+
+exports.home = function(req, res) {
+  if (req.userData.role=='mahasiswa') res.render('home-user');
+  else if (req.userData.role=='petugas') res.render('home-petugas');
+};
+
 exports.create_mahasiswa = function(req, res) {
-  var user = new Mahasiswa({
-    username: req.body.username,
-    password: req.body.password,
-    nama: req.body.nama,
-    email: req.body.email,
-    telepon: req.body.telepon,
-    nim: req.body.nim,
-    angkatan: req.body.angkatan
-  });
+  var user = new Mahasiswa(req.body);
 
   user.save(function(err) {
     if (err){
       return res.status(409).json(err);
     };
-    return res.json('Mahasiswa created');
+    res.render('login-user');
   });
 };
 
 exports.create_petugas = function(req, res) {
-  var user = new Petugas({
-    username: req.body.username,
-    password: req.body.password,
-    nama: req.body.nama,
-    email: req.body.email,
-    telepon: req.body.telepon,
-  });
+  var user = new Petugas(req.body);
 
   user.save(function(err) {
     if (err){
@@ -51,18 +59,23 @@ exports.login_user = function(req, res) {
     
     if (!user) 
     {
-      return res.status(401).json('user not found');
+      // return res.status(401).json('user not found');
+      return res.render('login-user', {error: 'user not found'})
     }
-
-    if(user.status=='waiting') return res.status(403).json('user status: WAITING, need admin approval first.')
     user.verifyPassword(req.body.password, function(err, isMatch) {
-      if (err) { return res.status(401).json(err) }
+      if (err) { 
+        // return res.status(401).json(err) 
+        return res.render('login-user', {error: err})
+      }
 
       // Password did not match
-      if (!isMatch) { return res.status(401).json('wrong password') }
-
+      if (!isMatch) { 
+        // return res.status(401).json('wrong password') 
+        return res.render('login-user', {error: 'wrong password'})
+      }
+      
       // Success
-      token = jwt.sign({
+      var token = jwt.sign({
         userId: user._id,
         username: user.username,
         role: user.role
@@ -71,33 +84,10 @@ exports.login_user = function(req, res) {
       {
         expiresIn: "12h"
       });
-      res.json(token);
+      res.cookie('auth', token);
+      return res.redirect('/home');
     });
   })
-}
-
-exports.edit_user_status = function(req, res){
-  User.findOneAndUpdate(
-    { _id: req.body.idUser }, { $set: { 
-      status: 'approved', 
-      privilege: req.body.privilege
-    }}
-  )
-  .exec()
-    .then(result => {
-        res.status(200).json({
-            result,
-            message: "User updated",
-            request: {
-                type: "PATCH"
-            }
-        });
-    })
-    .catch(err => {
-        res.status(500).json({
-            error: err
-        });
-    })
 }
 
 exports.delete_user = function(req, res){
@@ -108,14 +98,6 @@ exports.delete_user = function(req, res){
   .then(result => {
     if (result) res.status(200).json({result, message: 'user deleted'});
     else res.status(401).json('user not found')
-  })
-}
-
-exports.get_user_waiting = function(req, res){
-  User.find({status: 'waiting'})
-  .exec()
-  .then(result => {
-    res.status(200).json(result);
   })
 }
 

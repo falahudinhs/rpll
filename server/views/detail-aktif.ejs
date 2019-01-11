@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="anto_stiek@yahoo.com">
+    <meta name="author" content="Anto">
+    <meta name="keyword" content="Anto">
+    <link rel="shortcut icon" href="img/favicon.png">
+
+    <title>Sistem Informasi Pelayanan Akademik</title>
+
+    <!-- Bootstrap CSS -->    
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <!-- bootstrap theme -->
+    <link href="/css/bootstrap-theme.css" rel="stylesheet">
+    <!--external css-->
+    <!-- font icon -->
+    <link href="/css/elegant-icons-style.css" rel="stylesheet" />
+    <link href="/css/font-awesome.min.css" rel="stylesheet" />
+    <!-- Custom styles -->
+    <link href="/css/style.css" rel="stylesheet">
+    <link href="/css/style-responsive.css" rel="stylesheet" />
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+      <script src="js/respond.min.js"></script>
+      <script src="js/lte-ie7.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+  <!-- container section start -->
+  <section id="container" class="">
+      <!--header start-->
+      <header class="header dark-bg">
+            <div class="toggle-nav">
+                <div class="icon-reorder tooltips" data-original-title="Toggle Navigation" data-placement="bottom"><i class="icon_menu"></i></div>
+            </div>
+
+            <!--logo start-->
+            <a href="index.html" class="logo">Sistem Informasi Pelayanan Akademik</a>
+            <!--logo end-->
+
+            <div class="nav search-row" id="top_menu">               
+            </div>
+
+            <div class="top-nav notification-row">                
+                <!-- notificatoin dropdown start-->
+                <ul class="nav pull-right top-menu">
+                    <!-- user login dropdown start-->
+                    <li class="dropdown">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                            <span class="profile-ava">
+                                <img alt="" src="img/avatar-mini4.jpg">
+                            </span>
+                            <span class="username">Anto</span>
+                            <b class="caret"></b>
+                        </a>
+                    </li>
+                    <!-- user login dropdown end -->
+                </ul>
+                <!-- notificatoin dropdown end-->
+            </div>
+      </header>      
+      <!--header end-->
+
+      <!--sidebar start-->
+      <aside>
+          <div id="sidebar"  class="nav-collapse ">
+              <!-- sidebar menu start-->
+              <ul class="sidebar-menu">                
+                  <li class="active">
+                      <a class="" href="home.html">
+                          <span>Dashboard</span>
+                      </a>
+                  </li>
+                  <li class="">
+                      <a class="" href="aktif.html">
+                          <span>Surat Keterangan Aktif</span>
+                      </a>
+                  </li>
+                  <li class="">
+                      <a class="" href="akhir.html">
+                          <span>Surat Permintaan Data Untuk Tugas Akhir</span>
+                      </a>
+                  </li> 
+                  <li class="">
+                      <a class="" href="matkul.html">
+                          <span>Surat Permintaan Data Untuk Tugas Matakuliah</span>
+                      </a>
+                  </li>                  
+              </ul>
+              <!-- sidebar menu end-->
+          </div>
+      </aside>
+      <!--sidebar end-->
+
+      <!--main content start-->
+      <section id="main-content">
+          <section class="wrapper">
+		  <div class="row">
+				<div class="col-lg-12">
+					<h3 class="page-header"><i class="fa fa-files-o"></i> Detail Pengajuan Surat Keterangan Aktif</h3>
+					<ol class="breadcrumb">
+						<li><i class="fa fa-home"></i><a href="index.html">Home</a></li>
+						<li><i class="icon_document_alt"></i>Surat Keterangan Aktif</li>
+						<li><i class="fa fa-files-o"></i>Detail</li>
+					</ol>
+				</div>
+			</div>
+              <!-- Form validations -->              
+              <div class="row">
+                  <div class="col-lg-12">
+                      <section class="panel">
+                          <div class="panel-body">
+                              <div class="form">
+                                  <!-- <form class="form-validate form-horizontal" method="POST" action=""> -->
+                                      <div class="form-group ">
+                                          <label for="cname" class="control-label col-lg-2">Nama Lengkap<span class="required"></span></label>
+                                          <div class="col-lg-10">
+                                              <input class="form-control" id="cname" name="nama" value ="<%= data.idMahasiswa.nama %>" type="text" required />
+                                          </div>
+                                      </div>
+                                      <div class="form-group ">
+                                          <label for="cemail" class="control-label col-lg-2">NIM<span class="required"></span></label>
+                                          <div class="col-lg-10">
+                                              <input class="form-control " id="cemail" type="text" name="nim"  value ="<%= data.idMahasiswa.nim %>" required />
+                                          </div>
+                                      </div>
+                                      <div class="form-group ">
+                                          <label for="curl" class="control-label col-lg-2">Semester</label>
+                                          <div class="col-lg-10">
+                                              <input class="form-control " type="text" name="semester" value="<%= data.idMahasiswa.semester %>" />
+                                          </div>
+                                      </div>                                     
+                                      <div class="form-group ">
+                                          <label for="ccomment" class="control-label col-lg-2">Alasan Pengajuan</label>
+                                          <div class="col-lg-10">
+                                              <textarea class="form-control " id="comment" name="tujuanPembuatan" required disabled><%= data.tujuanPembuatan %></textarea>
+                                          </div>
+                                      </div>
+                                     <div class="form-group ">
+                                          <label for="curl" class="control-label col-lg-2">Status</label>
+                                          <div class="col-lg-10">
+                                              <input class="form-control " type="text" name="status" value="<%= data.status %>" />
+                                          </div>
+                                      </div>  
+                                       <div class="form-group ">
+                                          <label for="curl" class="control-label col-lg-2">Tgl. Pengambilan</label>
+                                          <div class="col-lg-10">
+                                              <input class="form-control " type="dare" name="tanggalSelesai" value="<%= data.tanggalSelesai %>" />
+                                          </div>
+                                      </div>                                    
+                                      <div class="form-group ">
+                                          <label for="ccomment" class="control-label col-lg-2">Keterangan<br><i><h6>(diperlukan apabila ada isian yang kurang lengkap)</h6></i></label>
+                                          <div class="col-lg-10">
+                                              <textarea class="form-control" name="ket"></textarea>
+                                          </div>
+                                      </div>
+                                      <div class="form-group">
+                                          <div class="col-lg-offset-2 col-lg-10">
+                                              <button class="btn btn-default" type="button" id="<%= JSON.stringify(data) %>" onclick="printPdf(this.id)">PDF</button>
+                                              <button class="btn btn-default" type="button">PRINT</button>
+                                              <button class="btn btn-default" type="button">SIMPAN</button>
+                                          </div>
+                                      </div>
+                                  <!-- </form> -->
+                              </div>
+
+                          </div>
+                      </section>
+                  </div>
+              </div>
+          </section>
+      </section>
+      <!--main content end-->
+  </section>
+  <!-- container section end -->
+
+    <!-- javascripts -->
+    <script type="text/javascript">
+        function printPdf(input){
+            var obj = JSON.parse(input);
+            var docDefinition = {
+                content: [
+                    // if you don't need styles, you can use a simple string to define a paragraph
+                    'Status: '+ obj.status,
+                    'Tanggal Diajukan: '+ obj.tanggalDiajukan,
+                    'Tanggal Selesai: '+ obj.tanggalSelesai,
+                    'Nama Surat: '+ obj.nama,
+                    'Tujuan Pembuatan: '+ obj.tujuanPembuatan,
+                    'Nama Mahasiswa: '+ obj.idMahasiswa.nama,
+                    'NIM: '+ obj.idMahasiswa.nim
+                ]
+            };
+            // console.log('masuk', obj)
+            var data = {cobacoba: 'meong'};
+            console.log(data)
+            pdfMake.createPdf(docDefinition).download();
+        }
+    </script>
+
+
+    <script src="/js/jquery.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <!-- nice scroll -->
+    <script src="/js/jquery.scrollTo.min.js"></script>
+    <script src="/js/jquery.nicescroll.js" type="text/javascript"></script>
+    <!-- jquery validate js -->
+    <script type="text/javascript" src="/js/jquery.validate.min.js"></script>
+
+    <!-- custom form validation script for this page-->
+    <script src="/js/form-validation-script.js"></script>
+    <!--custome script for all page-->
+    <script src="/js/scripts.js"></script>   
+
+    <script src='/build/pdfmake.min.js'></script> 
+    <script src='/build/vfs_fonts.js'></script>  
+
+
+  </body>
+</html>

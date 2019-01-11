@@ -5,7 +5,7 @@ var User = require('./userModels');
 
 var Mahasiswa = new Schema({
     nim: String,
-    angkatan: String
+    semester: String
 });
 
 module.exports = User.discriminator('mahasiswa', Mahasiswa);
